@@ -1,0 +1,47 @@
+schema_name: eligibility
+description: Eligibility fact table schema configuration
+
+business_keys:
+  - eligibility_id
+  - effective_date
+
+required_columns:
+  - eligibility_id
+  - member_id
+  - effective_date
+  - status
+
+date_columns:
+  - effective_date
+  - termination_date
+
+enum_columns:
+  - name: status
+    values:
+      - ACTIVE
+      - INACTIVE
+      - PENDING
+      - TERMINATED
+    allow_null: false
+
+  - name: coverage_type
+    values:
+      - MEDICAL
+      - DENTAL
+      - VISION
+      - PHARMACY
+      - MENTAL_HEALTH
+    allow_null: true
+
+numeric_ranges:
+  - column: premium_amount
+    min: 0
+    max: 10000
+
+  - column: deductible_amount
+    min: 0
+    max: 25000
+
+null_defaults:
+  coverage_type: MEDICAL
+  status: PENDING

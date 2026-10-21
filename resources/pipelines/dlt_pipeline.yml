@@ -1,0 +1,38 @@
+name: data_quality_pipeline
+
+# Delta Live Tables pipeline configuration
+# For streaming and incremental processing with data quality constraints
+
+target: main
+storage: /mnt/data/dlt/data_quality_pipeline
+
+clusters:
+  - label: default
+    spark_conf:
+      spark.databricks.delta.properties.defaults.autoOptimize.optimizeWrite: "true"
+    num_workers: 2
+    node_type_id: "i3.xlarge"
+
+libraries:
+  - notebook:
+      path: /Workspace/notebooks/dlt/member_bronze_to_silver
+  - notebook:
+      path: /Workspace/notebooks/dlt/eligibility_bronze_to_silver
+
+development: true
+continuous: false
+
+configuration:
+  pipeline.environment: dev
+
+notifications:
+  - email_recipients:
+      - data-engineering-team@company.com
+    alerts:
+      - on-update-failure
+      - on-update-fatal-failure
+      - on-flow-failure
+
+edition: advanced
+photon_enabled: true
+channel: current

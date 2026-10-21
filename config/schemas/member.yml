@@ -1,0 +1,102 @@
+schema_name: member
+description: Member dimension schema configuration
+
+business_keys:
+  - member_id
+
+required_columns:
+  - member_id
+  - first_name
+  - last_name
+  - date_of_birth
+
+compare_columns:
+  - first_name
+  - last_name
+  - date_of_birth
+  - gender
+  - ssn
+  - phone_number
+  - email
+  - address_line1
+  - address_line2
+  - city
+  - state
+  - zip_code
+
+enum_columns:
+  - name: gender
+    values:
+      - M
+      - F
+      - U
+      - O
+    allow_null: true
+
+  - name: state
+    values:
+      - AL
+      - AK
+      - AZ
+      - AR
+      - CA
+      - CO
+      - CT
+      - DE
+      - FL
+      - GA
+      - HI
+      - ID
+      - IL
+      - IN
+      - IA
+      - KS
+      - KY
+      - LA
+      - ME
+      - MD
+      - MA
+      - MI
+      - MN
+      - MS
+      - MO
+      - MT
+      - NE
+      - NV
+      - NH
+      - NJ
+      - NM
+      - NY
+      - NC
+      - ND
+      - OH
+      - OK
+      - OR
+      - PA
+      - RI
+      - SC
+      - SD
+      - TN
+      - TX
+      - UT
+      - VT
+      - VA
+      - WA
+      - WV
+      - WI
+      - WY
+    allow_null: false
+
+date_columns:
+  - date_of_birth
+
+null_defaults:
+  gender: U
+  address_line2: ""
+
+pii_columns:
+  - ssn
+  - phone_number
+  - email
+  - address_line1
+  - address_line2

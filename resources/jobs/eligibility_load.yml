@@ -1,0 +1,74 @@
+name: eligibility_load_job
+
+schedule:
+  quartz_cron_expression: "0 30 2 * * ?" # Daily at 2:30 AM (after member load)
+  timezone_id: "America/New_York"
+  pause_status: UNPAUSED
+
+email_notifications:
+  on_failure:
+    - data-engineering-team@company.com
+
+max_concurrent_runs: 1
+timeout_seconds: 7200
+
+tasks:
+  - task_key: eligibility_pipeline
+    description: "Ingest and process eligibility data from SFTP"
+
+    notebook_task:
+      notebook_path: /Workspace/notebooks/orchestration/main
+      base_parameters:
+        pipeline_name: eligibility
+        environment: "{{job.parameters.environment}}"
+        date: "{{job.parameters.date}}"
+
+    job_cluster_key: data_pipeline_cluster
+
+    timeout_seconds: 3600
+
+    max_retries: 2
+    min_retry_interval_millis: 300000
+    retry_on_timeout: true
+
+    email_notifications:
+      on_failure:
+        - data-engineering-team@company.com
+
+  - task_key: data_quality_checks
+    description: "Run data quality validations on eligibility data"
+    depends_on:
+      - task_key: eligibility_pipeline
+
+    notebook_task:
+      notebook_path: /Workspace/tests/data_quality/eligibility_checks
+      base_parameters:
+        environment: "{{job.parameters.environment}}"
+
+    job_cluster_key: data_pipeline_cluster
+
+    timeout_seconds: 600
+
+job_clusters:
+  - job_cluster_key: data_pipeline_cluster
+    new_cluster:
+      spark_version: "14.3.x-scala2.12"
+      node_type_id: "i3.xlarge"
+      num_workers: 2
+
+      spark_conf:
+        "spark.databricks.delta.properties.defaults.autoOptimize.optimizeWrite": "true"
+        "spark.databricks.delta.properties.defaults.autoOptimize.autoCompact": "true"
+
+      aws_attributes:
+        availability: SPOT_WITH_FALLBACK
+
+parameters:
+  - name: environment
+    default: dev
+  - name: date
+    default: ""
+
+tags:
+  project: data-platform
+  team: data-engineering

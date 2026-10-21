@@ -1,0 +1,50 @@
+client_name: health_plan_a
+description: Configuration for Health Plan A data feeds
+
+database:
+  type: sql_server
+  host: sqlserver.healthplana.com
+  port: 1433
+  database: MemberData
+  schema: dbo
+
+sftp:
+  host: sftp.healthplana.com
+  port: 22
+  username: databricks_user
+  auth_type: private_key
+  directory: /outbound/eligibility
+
+api:
+  base_url: https://api.healthplana.com/v1
+  auth_type: oauth2
+  token_endpoint: https://auth.healthplana.com/oauth/token
+
+file_formats:
+  eligibility:
+    type: csv
+    delimiter: ","
+    header: true
+    date_format: "yyyy-MM-dd"
+    file_pattern: "eligibility_*.csv"
+
+schedules:
+  member_load:
+    frequency: daily
+    time: "02:00"
+    timezone: America/New_York
+
+  eligibility_load:
+    frequency: daily
+    time: "02:30"
+    timezone: America/New_York
+
+data_retention:
+  bronze: 90  # days
+  silver: 365
+  gold: 1825  # 5 years
+
+notifications:
+  email:
+    - healthplana-team@company.com
+  slack_channel: "#healthplana-alerts"

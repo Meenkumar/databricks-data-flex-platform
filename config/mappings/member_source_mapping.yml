@@ -1,0 +1,67 @@
+mapping_name: member_source_to_target
+description: Field mapping from source SQL Server to target member dimension
+
+source_system: sql_server
+target_table: main.silver.dim_member
+
+field_mappings:
+  # Direct mappings
+  - source_field: MemberID
+    target_field: member_id
+    transformation: TRIM(UPPER({field}))
+
+  - source_field: FirstName
+    target_field: first_name
+    transformation: TRIM({field})
+
+  - source_field: LastName
+    target_field: last_name
+    transformation: TRIM({field})
+
+  - source_field: DOB
+    target_field: date_of_birth
+    transformation: TO_DATE({field})
+
+  - source_field: Gender
+    target_field: gender
+    transformation: UPPER(TRIM({field}))
+
+  - source_field: SSN
+    target_field: ssn
+    transformation: REGEXP_REPLACE({field}, '[^0-9]', '')
+
+  - source_field: Phone
+    target_field: phone_number
+    transformation: null  # Handled by cleansing module
+
+  - source_field: Email
+    target_field: email
+    transformation: LOWER(TRIM({field}))
+
+  - source_field: AddressLine1
+    target_field: address_line1
+    transformation: TRIM({field})
+
+  - source_field: AddressLine2
+    target_field: address_line2
+    transformation: TRIM({field})
+
+  - source_field: City
+    target_field: city
+    transformation: TRIM({field})
+
+  - source_field: State
+    target_field: state
+    transformation: UPPER(TRIM({field}))
+
+  - source_field: ZipCode
+    target_field: zip_code
+    transformation: REGEXP_REPLACE({field}, '[^0-9]', '')
+
+# Calculated fields
+calculated_fields:
+  - target_field: full_name
+    expression: CONCAT({first_name}, ' ', {last_name})
+
+  - target_field: age
+    expression: YEAR(CURRENT_DATE()) - YEAR({date_of_birth})

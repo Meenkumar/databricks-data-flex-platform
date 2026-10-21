@@ -1,0 +1,139 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+.virtualenv/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+.hypothesis/
+
+# Databricks
+.databricks/
+*.db-token
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+*.env
+
+# Secrets
+secrets/
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# Temporary files
+*.tmp
+*.temp
+tmp/
+temp/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# OS
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Project specific
+data/
+output/
+*.parquet
+*.delta
+metastore_db/
+
+# Documentation build
+site/
+docs/_build/
+
+# Cache
+.cache/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+
+# Distribution
+*.whl
+*.tar.gz
+
+# Unit test / coverage reports
+nosetests.xml
+test-results/
+
+# Spark
+spark-warehouse/
+derby.log
+metastore_db/
+
+# Config overrides (keep templates, ignore instances)
+config/*_local.yml
+config/**/*_local.yml
+*.local.yml
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Lock files (keep in git for reproducibility)
+# Uncomment if you want to ignore lock files
+# poetry.lock
+# Pipfile.lock

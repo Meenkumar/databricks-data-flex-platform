@@ -1,0 +1,74 @@
+name: member_load_job
+
+schedule:
+  quartz_cron_expression: "0 0 2 * * ?" # Daily at 2 AM
+  timezone_id: "America/New_York"
+  pause_status: UNPAUSED
+
+email_notifications:
+  on_failure:
+    - data-engineering-team@company.com
+  on_success:
+    - data-engineering-team@company.com
+  no_alert_for_skipped_runs: true
+
+max_concurrent_runs: 1
+timeout_seconds: 7200
+
+tasks:
+  - task_key: member_pipeline
+    description: "Ingest and process member data from SQL Server"
+
+    notebook_task:
+      notebook_path: /Workspace/notebooks/orchestration/main
+      base_parameters:
+        pipeline_name: member
+        environment: "{{job.parameters.environment}}"
+        date: "{{job.parameters.date}}"
+
+    job_cluster_key: data_pipeline_cluster
+
+    timeout_seconds: 3600
+
+    max_retries: 2
+    min_retry_interval_millis: 300000 # 5 minutes
+    retry_on_timeout: true
+
+    email_notifications:
+      on_failure:
+        - data-engineering-team@company.com
+
+job_clusters:
+  - job_cluster_key: data_pipeline_cluster
+    new_cluster:
+      spark_version: "14.3.x-scala2.12"
+      node_type_id: "i3.xlarge"
+      num_workers: 2
+
+      spark_conf:
+        "spark.databricks.delta.properties.defaults.autoOptimize.optimizeWrite": "true"
+        "spark.databricks.delta.properties.defaults.autoOptimize.autoCompact": "true"
+        "spark.sql.adaptive.enabled": "true"
+
+      aws_attributes:
+        availability: SPOT_WITH_FALLBACK
+        zone_id: "auto"
+        spot_bid_price_percent: 100
+
+      spark_env_vars:
+        ENVIRONMENT: "{{job.parameters.environment}}"
+
+      init_scripts:
+        - workspace:
+            destination: /Workspace/scripts/cluster_init.sh
+
+parameters:
+  - name: environment
+    default: dev
+  - name: date
+    default: ""
+
+tags:
+  project: data-platform
+  team: data-engineering
+  cost-center: analytics

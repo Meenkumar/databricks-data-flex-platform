@@ -1,0 +1,56 @@
+# Card Issue Pipeline Configuration - Development Environment
+source_system: eligibility
+target_table: data_nonpii_dev.otcfunds.card_benefit_load_ci
+
+# Catalog and database configuration
+catalog: data_nonpii_dev
+database: flex
+
+# Card Issue Parameters
+client_code: H225
+benefit_year: 2026
+affinity: Igloo
+
+# Source Tables (all in data_nonpii_dev catalog)
+source_tables:
+  eligibility: data_nonpii_dev.elig.mstr_elig_benefit_data
+  plaid_requests: data_nonpii_dev.flex.plaid_member_requests
+  plaid_responses: data_nonpii_dev.flex.plaid_member_responses
+  card_package: data_nonpii_dev.flex.card_package
+  client_benefit_rules: data_nonpii_dev.otcfunds.client_benefit_rules_data
+  insurance_carriers: data_nonpii_dev.config.insurance_carriers
+
+# Target Tables (all in data_nonpii_dev catalog)
+target_tables:
+  card_benefit_load_ci: data_nonpii_dev.otcfunds.card_benefit_load_ci
+  benefit_card_mapping: data_nonpii_dev.otcfunds.benefit_card_mapping
+  member_exception: data_nonpii_dev.otcfunds.flexbenefit_member_exception
+  file_info: data_nonpii_dev.otcfunds.file_info
+
+# Business Rules
+card_issue_conditions:
+  - ALL
+
+benefit_source: Igloo
+benefit_type: OTC
+record_type: CI
+data_source: ELIG
+
+# Default values
+defaults:
+  mailing_country_code: USA
+  fulfillment_carrier: USPS
+  fulfillment_shipping_type: First Class
+  action: CREATE
+  is_card_virtual: ""
+  is_active: 1
+  request_to_be_processed: "Y"
+
+# Date calculations
+date_offset_days: 30  # Eligible as of date offset
+
+# Write mode
+write_mode: append
+
+# Enable audit logging
+enable_audit: true
